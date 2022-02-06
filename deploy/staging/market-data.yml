@@ -5,6 +5,9 @@ metadata:
   name: market-data
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      app: market-data
   strategy:
     type: RollingUpdate
     rollingUpdate:
