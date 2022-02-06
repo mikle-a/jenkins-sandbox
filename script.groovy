@@ -21,7 +21,11 @@ withPod {
                 sh("docker build -t ${service} .")
             }
             stage('Test') {
-                sh("docker run --rm ${service} python setup.py test")
+                try {
+                    sh("docker run -v `pwd`:/workspace --rm ${service} python setup.py test")
+                } finally {
+                    step([$class: 'JUnitResultArchiver', testResults: 'results.xml'])
+                }
             }
         }
     }
