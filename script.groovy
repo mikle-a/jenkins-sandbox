@@ -20,6 +20,9 @@ withPod {
             stage('Build') {
                 sh("docker build -t ${service} .")
             }
+            stage('Test') {
+                sh("docker run --rm ${service} python setup.py test")
+            }
         }
     }
 }
