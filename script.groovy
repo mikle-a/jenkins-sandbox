@@ -37,6 +37,14 @@ withPod {
                     sh("docker push ${tagToDeploy}")
                 }
             }
+
+            stage('Deploy') {
+                sh("sed -i 's#BUILD_TAG#${tagToDeploy}#' ./deploy/staging/*.yml")
+
+                container('kubectl') {
+                    sh("kubectl --namespace=staging apply -f deploy/staging/")
+                }
+            }
         }
     }
 }
