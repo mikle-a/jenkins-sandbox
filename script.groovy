@@ -38,12 +38,17 @@ withPod {
                 }
             }
 
-            stage('Deploy') {
-                sh("sed -i 's#BUILD_TAG#${tagToDeploy}#' ./deploy/staging/*.yml")
+            def deploy = load('deploy.groovy')
+            stage('Deploy to staging') {
+                deploy.toKubernetes(tagToDeploy, 'staging', 'market-data')
+            }
 
-                container('kubectl') {
-                    sh("kubectl --namespace=staging apply -f deploy/staging/")
-                }
+            stage('Approve release?') {
+                input "Release ${tagToDeploy} to production?"
+            }
+
+            stage('Deploy to production') {
+                deploy.toKubernetes(tagToDeploy, 'production', 'market-data')
             }
         }
     }
