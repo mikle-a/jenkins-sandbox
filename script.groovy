@@ -13,6 +13,8 @@ withPod {
     node('pod') {
         def tag = "${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
         def service = "market-data:${tag}"
+        def tagToDeploy = "mananchenko/${service}"
+        def deploy = load('deploy.groovy')
 
         checkout scm
 
@@ -30,7 +32,6 @@ withPod {
                 }
             }
 
-            def tagToDeploy = "mananchenko/${service}"
             stage('Publish') {
                 withDockerRegistry(registry: [credentialsId: 'dockerhub']) {
                     sh("docker tag ${service} ${tagToDeploy}")
@@ -38,7 +39,7 @@ withPod {
                 }
             }
 
-            def deploy = load('deploy.groovy')
+
             stage('Deploy to staging') {
                 deploy.toKubernetes(tagToDeploy, 'staging', 'market-data')
             }
