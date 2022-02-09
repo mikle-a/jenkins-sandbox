@@ -43,6 +43,16 @@ withPod {
                 deploy.toKubernetes(tagToDeploy, 'staging', 'market-data')
             }
 
+            stage('Deploy canary') {
+                deploy.toKubernetes(tagToDeploy, 'canary', 'market-data-canary')
+
+                try {
+                    input message: "Continue releasing ${tagToDeploy} to production?"
+                } catch (Exception e) {
+                    deploy.rollback('market-data-canary')
+                }
+            }
+
             stage('Approve release?') {
                 input "Release ${tagToDeploy} to production?"
             }
