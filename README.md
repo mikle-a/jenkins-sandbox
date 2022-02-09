@@ -8,3 +8,6 @@ Provides following steps:
 - Deploy to staging
 - Canary deploy 
 - Production deploy - through the manual approve
+
+
+![Stage View](img.png)
