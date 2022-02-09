@@ -53,10 +53,6 @@ withPod {
                 }
             }
 
-            stage('Approve release?') {
-                input "Release ${tagToDeploy} to production?"
-            }
-
             stage('Deploy to production') {
                 deploy.toKubernetes(tagToDeploy, 'production', 'market-data')
             }
